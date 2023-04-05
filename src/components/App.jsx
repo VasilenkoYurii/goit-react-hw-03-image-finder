@@ -40,6 +40,13 @@ export class App extends Component {
 
         if (responceHits.length === 0) {
           toast.error(`We couldn't find anything, please try again!`);
+          this.setState({
+            hits: responceHits,
+            loading: false,
+            showButton: false,
+            buttonLoading: false,
+          });
+          return;
         }
 
         if (responceHits.length < 12) {
@@ -47,10 +54,16 @@ export class App extends Component {
             hits: responceHits,
             loading: false,
             showButton: false,
+            buttonLoading: false,
           });
           return;
         }
-        this.setState({ hits: responceHits, loading: false, showButton: true });
+        this.setState({
+          hits: responceHits,
+          loading: false,
+          showButton: true,
+          buttonLoading: false,
+        });
       } catch (error) {
         console.log(error);
       }
