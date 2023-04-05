@@ -3,14 +3,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Blocks } from 'react-loader-spinner';
 import { Component } from 'react';
-import { createPortal } from 'react-dom';
+// import { createPortal } from 'react-dom';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { ButtonMore } from './Button/Button';
 
 const API_KEY = '33687717-ba072cce310c3fac718a1e690';
-const modalRoot = document.querySelector('#modal-root');
+// const modalRoot = document.querySelector('#modal-root');
 
 export class App extends Component {
   state = {
@@ -72,6 +72,10 @@ export class App extends Component {
     this.setState({ page: nextPage });
   };
 
+  openModal = id => {
+    console.log(id);
+  };
+
   render() {
     const { hits, loading, request, buttonLoading } = this.state;
 
@@ -79,7 +83,9 @@ export class App extends Component {
       <div className="App">
         <Searchbar onSubmit={this.handleSubmit.bind(this)} />
         {loading && <Blocks visible={true} height="80" width="80" />}
-        <ImageGallery>{hits && <ImageGalleryItem hits={hits} />}</ImageGallery>
+        <ImageGallery>
+          {hits && <ImageGalleryItem hits={hits} openModal={this.openModal} />}
+        </ImageGallery>
         {request !== '' &&
           !loading &&
           (buttonLoading ? (

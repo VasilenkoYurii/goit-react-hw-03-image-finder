@@ -4,11 +4,16 @@ import {
   ImageGalleryItemImage,
 } from './ImageGalleryItem.styled';
 
-export const ImageGalleryItem = ({ hits }) => {
+export const ImageGalleryItem = ({ hits, openModal }) => {
   console.log(hits);
   return hits.map(({ id, webformatURL, largeImageURL }) => {
     return (
-      <ImageGalleryItemLi key={id}>
+      <ImageGalleryItemLi
+        key={id}
+        onClick={() => {
+          openModal(largeImageURL);
+        }}
+      >
         <ImageGalleryItemImage src={webformatURL} alt={id} />
       </ImageGalleryItemLi>
     );
