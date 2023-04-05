@@ -5,7 +5,6 @@ import {
 } from './ImageGalleryItem.styled';
 
 export const ImageGalleryItem = ({ hits, openModal }) => {
-  console.log(hits);
   return hits.map(({ id, webformatURL, largeImageURL }) => {
     return (
       <ImageGalleryItemLi
