@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Blocks } from 'react-loader-spinner';
 import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { ButtonMore } from './Button/Button';
 import { Modal } from './Modal/Modal';
+import { Loader } from './Loader/Loader';
 
 const API_KEY = '33687717-ba072cce310c3fac718a1e690';
 
@@ -121,7 +121,7 @@ export class App extends Component {
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSubmit.bind(this)} />
-        {loading && <Blocks visible={true} height="80" width="80" />}
+        {loading && <Loader size={80} />}
         <ImageGallery>
           {hits && <ImageGalleryItem hits={hits} openModal={this.openModal} />}
         </ImageGallery>
@@ -129,7 +129,7 @@ export class App extends Component {
           !loading &&
           request !== '' &&
           (buttonLoading ? (
-            <Blocks visible={true} height="40" width="40" />
+            <Loader size={40} />
           ) : (
             <ButtonMore loadMore={this.loadMore} />
           ))}
