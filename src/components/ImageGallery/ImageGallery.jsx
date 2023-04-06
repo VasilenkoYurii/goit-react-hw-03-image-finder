@@ -1,10 +1,31 @@
 import PropTypes from 'prop-types';
-import { ImageGalleryUl } from './ImageGallery.styled';
+import {
+  ImageGalleryUl,
+  ImageGalleryItemLi,
+  ImageGalleryItemImage,
+} from './ImageGallery.styled';
 
-export const ImageGallery = ({ children }) => {
-  return <ImageGalleryUl>{children}</ImageGalleryUl>;
+export const ImageGallery = ({ hits, openModal }) => {
+  return (
+    <ImageGalleryUl>
+      {hits &&
+        hits.map(({ id, webformatURL, largeImageURL }) => {
+          return (
+            <ImageGalleryItemLi
+              key={id}
+              onClick={() => {
+                openModal(largeImageURL);
+              }}
+            >
+              <ImageGalleryItemImage src={webformatURL} alt={id} />
+            </ImageGalleryItemLi>
+          );
+        })}
+    </ImageGalleryUl>
+  );
 };
 
 ImageGallery.prototype = {
-  children: PropTypes.any.isRequired,
+  hits: PropTypes.array.isRequired,
+  openModal: PropTypes.func.isRequired,
 };

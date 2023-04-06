@@ -4,7 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { ButtonMore } from './Button/Button';
 import { Modal } from './Modal/Modal';
 import { Loader } from './Loader/Loader';
@@ -34,14 +33,21 @@ export class App extends Component {
         this.setState({ loading: true, hits: null, page: 1 });
 
         const respons = await axios.get(
-          `https://pixabay.com/api/?q=${nextRequest}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+          `https://pixabay.com/api/?q=${nextRequest}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
         );
         const responceHits = respons.data.hits;
+        const filteredData = responceHits.map(
+          ({ id, largeImageURL, webformatURL }) => ({
+            id,
+            largeImageURL,
+            webformatURL,
+          })
+        );
 
-        if (responceHits.length === 0) {
+        if (filteredData.length === 0) {
           toast.error(`We couldn't find anything, please try again!`);
           this.setState({
-            hits: responceHits,
+            hits: filteredData,
             loading: false,
             showButton: false,
             buttonLoading: false,
@@ -49,9 +55,9 @@ export class App extends Component {
           return;
         }
 
-        if (responceHits.length < 12) {
+        if (filteredData.length < 12) {
           this.setState({
-            hits: responceHits,
+            hits: filteredData,
             loading: false,
             showButton: false,
             buttonLoading: false,
@@ -59,7 +65,7 @@ export class App extends Component {
           return;
         }
         this.setState({
-          hits: responceHits,
+          hits: filteredData,
           loading: false,
           showButton: true,
           buttonLoading: false,
@@ -71,14 +77,24 @@ export class App extends Component {
 
     if (prevPage !== nextPage) {
       try {
+        if (this.state.page === 1) {
+          return;
+        }
         this.setState({ buttonLoading: true });
         const respons = await axios.get(
           `https://pixabay.com/api/?q=${nextRequest}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
         );
         const responceHits = respons.data.hits;
-        const newHits = [...this.state.hits, ...responceHits];
+        const filteredData = responceHits.map(
+          ({ id, largeImageURL, webformatURL }) => ({
+            id,
+            largeImageURL,
+            webformatURL,
+          })
+        );
+        const newHits = [...this.state.hits, ...filteredData];
 
-        if (responceHits.length < 12) {
+        if (filteredData.length < 12) {
           this.setState({
             hits: newHits,
             loading: false,
@@ -98,13 +114,12 @@ export class App extends Component {
     }
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
-    if (e.target[1].value.toLowerCase().trim() === '') {
+  handleSubmit(word) {
+    if (word.toLowerCase().trim() === '') {
       toast.error('🦄 Enter a query!');
       return;
     }
-    this.setState({ request: e.target[1].value.toLowerCase().trim() });
+    this.setState({ request: word.toLowerCase().trim() });
   }
 
   loadMore = () => {
@@ -135,9 +150,7 @@ export class App extends Component {
       <div className="App">
         <Searchbar onSubmit={this.handleSubmit.bind(this)} />
         {loading && <Loader size={80} />}
-        <ImageGallery>
-          {hits && <ImageGalleryItem hits={hits} openModal={this.openModal} />}
-        </ImageGallery>
+        <ImageGallery hits={hits} openModal={this.openModal} />
         {showButton &&
           !loading &&
           request !== '' &&

@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { BsSearch } from 'react-icons/bs';
 import {
@@ -8,27 +9,46 @@ import {
   SearchFormInput,
 } from './Searchbar.styled';
 
-export const Searchbar = ({ onSubmit }) => {
-  return (
-    <HeaderSearchbar>
-      <SearchForm onSubmit={onSubmit}>
-        <SearchFormButton type="submit">
-          <BsSearch className="search-icon" />
-          <SearchFormButtonLabel>Search</SearchFormButtonLabel>
-        </SearchFormButton>
+export class Searchbar extends Component {
+  state = {
+    request: '',
+  };
 
-        <SearchFormInput
-          className="input"
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-        />
-      </SearchForm>
-    </HeaderSearchbar>
-  );
-};
+  setSearchValue = e => {
+    this.setState({ request: e.target.value });
+  };
 
-Searchbar.prototype = {
+  submit(e) {
+    e.preventDefault();
+    this.props.onSubmit(this.state.request);
+  }
+
+  render() {
+    return (
+      <HeaderSearchbar>
+        <SearchForm
+          onSubmit={e => {
+            this.submit(e);
+          }}
+        >
+          <SearchFormButton type="submit">
+            <BsSearch className="search-icon" />
+            <SearchFormButtonLabel>Search</SearchFormButtonLabel>
+          </SearchFormButton>
+          <SearchFormInput
+            className="input"
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            onChange={this.setSearchValue}
+          />
+        </SearchForm>
+      </HeaderSearchbar>
+    );
+  }
+}
+
+Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
